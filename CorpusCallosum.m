@@ -19,43 +19,52 @@ par = Bakiri2011CorpusCallosum();
 fprintf('RUNNING BASELINE MODEL\n')
 Model(par, fullfile(saveDirectory, 'CorpusCallosumBaseline.mat'));
 
-%% Na channel density 50%
-% Regenerate parameters for Bakiri Corpus Callosum model
-par = Bakiri2011CorpusCallosum();
-
-% Reduce the Na channel density by 50%
-par.node.elec.act(1).cond.value.ref = par.node.elec.act(1).cond.value.ref * 0.5;
-par.node.elec.act(1).cond.value.vec = par.node.elec.act(1).cond.value.ref * ones(par.geo.nnode, par.geo.nnodeseg);
-
-% Update leak conductance to maintain resting membrane potential.
-par = CalculateLeakConductance(par);
-
-% Run the model with updated parameters.
-fprintf('RUNNING MODEL 100%% Myelin 50%% Density\n')
-Model(par, fullfile(saveDirectory, 'CorpusCallosum100My50Na.mat'));
-
-%% Na channel density 150%
-% Regenerate parameters for Bakiri Corpus Callosum model
-par = Bakiri2011CorpusCallosum();
-
-% Increase the Na channel density by 50%
-par.node.elec.act(1).cond.value.ref = par.node.elec.act(1).cond.value.ref * 1.5;
-par.node.elec.act(1).cond.value.vec = par.node.elec.act(1).cond.value.ref * ones(par.geo.nnode, par.geo.nnodeseg);
-
-% Update leak conductance to maintain resting membrane potential.
-par = CalculateLeakConductance(par);
-
-% Run the model with updated parameters.
-fprintf('RUNNING MODEL 100%% Myelin 150%% Density\n')
-Model(par, fullfile(saveDirectory, 'CorpusCallosum100My150Na.mat'));
-
 %% Myelin wraps 50%
 % Regenerate parameters for Bakiri Corpus Callosum model
 par = Bakiri2011CorpusCallosum();
 
-% Update the number of myelin wraps.
-par.myel.geo.numlamellae.value.vec(:) = par.myel.geo.numlamellae.value.ref * 0.5;
+density = [50, 100, 150];
+
+for i = density
+
+% Update the number of myelin wraps
+par.myel.geo.numlamellae.value.vec(:) = 3;
+
+% Update the Na channel density
+par.node.elec.act(1).cond.value.ref = par.node.elec.act(1).cond.value.ref * i / 100;
+par.node.elec.act(1).cond.value.vec = par.node.elec.act(1).cond.value.ref * ones(par.geo.nnode, par.geo.nnodeseg);
+
+% Update leak conductance to maintain resting membrane potential.
+par = CalculateLeakConductance(par);
 
 % Run the model with updated parameters.
-fprintf('RUNNING MODEL 50%% Myelin 150%% Density\n')
-Model(par, fullfile(saveDirectory, 'CorpusCallosum50My150Na.mat'));
+fprintf('RUNNING MODEL 50%% Myelin %i%% Density\n',i)
+fileName = sprintf('CorpusCallosum50My%iNa.mat',i);
+Model(par, fullfile(saveDirectory, fileName));
+
+end
+
+%% Myelin wraps 25%
+% Regenerate parameters for Bakiri Corpus Callosum model
+par = Bakiri2011CorpusCallosum();
+
+density = [50, 100, 150];
+
+for i = density
+
+% Update the number of myelin wraps
+par.myel.geo.numlamellae.value.vec(:) = 1;
+
+% Update the Na channel density
+par.node.elec.act(1).cond.value.ref = par.node.elec.act(1).cond.value.ref * i / 100;
+par.node.elec.act(1).cond.value.vec = par.node.elec.act(1).cond.value.ref * ones(par.geo.nnode, par.geo.nnodeseg);
+
+% Update leak conductance to maintain resting membrane potential.
+par = CalculateLeakConductance(par);
+
+% Run the model with updated parameters.
+fprintf('RUNNING MODEL 25%% Myelin %i%% Density\n',i)
+fileName = sprintf('CorpusCallosum25My%iNa.mat',i);
+Model(par, fullfile(saveDirectory, fileName));
+
+end
