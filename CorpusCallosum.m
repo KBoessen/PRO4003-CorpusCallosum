@@ -93,3 +93,27 @@ fileName = sprintf('CorpusCallosum0My%iNa.mat',i);
 Model(par, fullfile(saveDirectory, fileName));
 
 end
+
+%% Plot Membrane Potentials
+
+density = [50, 100, 150];
+myelin = [0, 25, 50];
+
+for j = myelin
+    for i = density
+        fileName = sprintf('CorpusCallosum%iMy%iNa.mat',j,i);
+        plotMembranePotentials(fileName);
+    end
+end
+
+%% Plot Conduction Velocity
+
+density = [50, 100, 150];
+myelin = [0, 25, 50];
+
+for j = myelin
+    for i = density
+        fileName = sprintf('CorpusCallosum%iMy%iNa.mat',j,i);
+        plotConductionVelocity(fileName);
+    end
+end
