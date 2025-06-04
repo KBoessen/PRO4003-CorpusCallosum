@@ -21,7 +21,7 @@ hold off;
 %% 100my 50Na
 
 %load file
-load('CorpusCallosum100My50Na.mat');  
+load('CorpusCallosum200My150Na.mat');  
 
 %plot membrane potentials at all nodes
 figure;
